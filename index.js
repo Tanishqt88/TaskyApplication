@@ -83,10 +83,10 @@ const htmlModalContent = ({id, title, description, url }) => {
     `;
 };
 
-
+// Converting JSON to String for local storage
 const updateLocalStorage = () => {
     localStorage.setItem(
-        "Task",
+        "task",
         JSON.stringify({
             tasks: state.taskList,
         })
@@ -94,4 +94,33 @@ const updateLocalStorage = () => {
 };
 
 
-// Load Initial Data
+
+// Load Initial Data by converting String to Json to display cards on the screen
+const loadInitialData = () => {
+    const localStorageCopy = JSON.parse(localStorage.task);
+    if(localStorageCopy) state.taskList = localStorageCopy.tasks;
+
+    state.taskList.map((cardDate) => {
+        taskContents.insertAdjacentHTML("beforeend",htmlTaskContent(cardDate));
+    });
+};
+
+
+// to save changes when updated or edited
+const handleSubmit = (event) => {
+    const id = `${Date.now()}`;
+    const input = {
+        url: document.getElementById("imageUrl").value,
+        title: document.getElementById("taskTitle").value,
+        tags: document.getElementById("tags").value,
+        taskDescription: document.getElementById("taskDescription").value
+    };
+    if(input.title===""||input.tags===""||input.taskDescription===""){
+        return alert("Please fill all the necessary fields")
+    }
+
+    taskContents.insertAdjacentHTML("beforeend", htmlTaskContent({...input, id}));
+    state.taskList.push({...input, id});
+
+    updateLocalStorage();
+};
