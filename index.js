@@ -157,8 +157,11 @@ const deleteTask =(e) => {
     // console.log(targetId);
     const type = e.target.tagName;
     // console.log(type);
-    const removeTask = state.taskList.filter(({id}) => id!== targetId);
-    console.log(removeTask);
+    // The 2 lines given below are wrong code line as it was causing the new element or modal added to not be deleted
+    
+    // const removeTask = state.taskList.filter(({id}) => id!== targetId);
+    // console.log(removeTask);
+    state.taskList=state.taskList.filter(({id}) => id!== targetId);
     updateLocalStorage();
 
     if(type === "BUTTON"){
@@ -262,8 +265,10 @@ const searchTask = (e) => {
     while(taskContents.firstChild){
         taskContents.removeChild(taskContents.firstChild);
     }
-    const resultData = state.taskList.filter(({title}) => {
-        title.includes(e.target.value)
-    });
-    
-}
+    const resultData = state.taskList.filter(({title}) => 
+        title.toLowerCase().includes(e.target.value.toLowerCase())
+    );
+    resultData.map((cardData) => 
+        taskContents.insertAdjacentHTML("beforeend", htmlTaskContent(cardData))
+    );
+};
